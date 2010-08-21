@@ -89,6 +89,93 @@ module ActionView
       end
       alias_method_chain :grouped_options_for_select, :escaping
     end
+
+    module NumberHelper
+      def number_to_human_size_with_escaping(number, *args)
+        return nil if number.nil?
+
+        options = args.extract_options!
+        options.symbolize_keys!
+
+        number = begin
+          Float(number)
+        rescue ArgumentError, TypeError
+          return number
+        end
+
+        number_to_human_size_without_escaping(number, *args).html_safe
+      end
+      alias_method_chain :number_to_human_size, :escaping
+
+      def number_with_precision_with_escaping(number, *args)
+        options = args.extract_options!
+        options.symbolize_keys!
+
+        number = begin
+          Float(number)
+        rescue ArgumentError, TypeError
+          return number
+        end
+
+        number_with_precision_without_escaping(number, *args).html_safe
+      end
+      alias_method_chain :number_with_precision, :escaping
+
+      def number_to_currency_with_escaping(number, options = {})
+        options.symbolize_keys!
+
+        number = begin
+          Float(number)
+        rescue ArgumentError, TypeError
+          return number
+        end
+
+        number_to_currency_without_escaping(number, options).html_safe
+      end
+      alias_method_chain :number_to_currency, :escaping
+
+      def number_to_percentage_with_escaping(number, options = {})
+        options.symbolize_keys!
+
+        number = begin
+          Float(number)
+        rescue ArgumentError, TypeError
+          return number
+        end
+
+        number_to_percentage_without_escaping(number, options).html_safe
+      end
+      alias_method_chain :number_to_percentage, :escaping
+
+      def number_to_phone_with_escaping(number, options = {})
+        return nil if number.nil?
+
+        begin
+          Float(number)
+          is_number_html_safe = true
+        rescue ArgumentError, TypeError
+          is_number_html_safe = number.to_s.html_safe?
+        end
+
+        str = number_to_phone_without_escaping(number, options)
+        is_number_html_safe ? str.html_safe : str
+      end
+      alias_method_chain :number_to_phone, :escaping
+
+      def number_with_delimiter_with_escaping(number, *args)
+        options = args.extract_options!
+        options.symbolize_keys!
+
+        number = begin
+          Float(number)
+        rescue ArgumentError, TypeError
+          return number
+        end
+
+        number_with_delimiter_without_escaping(number, *args).html_safe
+      end
+      alias_method_chain :number_with_delimiter, :escaping
+    end
   end
 end
 
